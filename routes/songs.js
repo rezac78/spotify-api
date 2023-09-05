@@ -1,22 +1,22 @@
 const { Router } = require("express");
 const songsControllers = require("../controllers/songsControllers");
+const isAdmin = require("../middlewares/isAdmin");
 const router = new Router();
 
 // Add a new song
 // Post /api/songs/
-router.post('/', songsControllers.AddSong);
+router.post("/", isAdmin, songsControllers.AddSong);
 // Get all songs
 // Get /api/songs/
-router.get('/', songsControllers.AllSong);
+router.get("/", isAdmin, songsControllers.AllSong);
 // Get details of a specific song
 // Get /api/songs/:songId
-router.get('/:songId', songsControllers.SpecificSong);
+router.get("/:songId", isAdmin, songsControllers.SpecificSong);
 // Update Song
 // PUT /api/songs/:songId
-router.put('/:songId', songsControllers.UpdateSong);
+router.put("/:songId", isAdmin, songsControllers.UpdateSong);
 // Delete Song
 // DELETE /api/songs/:songId
-router.delete('/:songId', songsControllers.DeleteSong);
-
+router.delete("/:songId", isAdmin, songsControllers.DeleteSong);
 
 module.exports = router;
