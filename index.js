@@ -1,6 +1,7 @@
 const path = require("path");
 
 const express = require("express");
+const cors = require('cors');
 const dotEnv = require("dotenv");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
@@ -24,12 +25,12 @@ if (process.env.NODE_ENV === "development") {
 //* Static Folder
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+app.use(cors());
 //* Use Routes
 app.use('/api/users', userRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/playlists', playlistRoutes);
 
-console.log(process.env.MONGO_URI)
 
 //* Select a port
 const PORT = process.env.PORT || 3000;
