@@ -9,12 +9,13 @@ exports.RegisterUser = async (req, res) => {
     const user = new User({
       username: req.body.username,
       email: req.body.email,
+      roles: req.body.roles || ["user"],
       password: hashedPassword,
     });
     await user.save();
     res.status(201).json({ message: "User registered successfully!" });
   } catch (err) {
-    if (err.code === 11000 && err.keyPattern && err.keyPattern.email ) {
+    if (err.code === 11000 && err.keyPattern && err.keyPattern.email) {
       return res.status(400).json({ error: "Email is already registered." });
     }
     res.status(500).json({ error: err.message });
@@ -25,15 +26,18 @@ exports.RegisterUser = async (req, res) => {
 exports.LoginUser = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) return res.status(400).json({ message: "User not found" });
-
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword)
     return res.status(400).json({ message: "Invalid password" });
 
-  const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, {
-    expiresIn: "1h",
-  }); // 'SECRET_KEY' should be stored securely, not as plain text
-  res.json({ token });
+  const token = jwt.sign(
+    { _id: user._id, roles: user.roles },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: "1h",
+    }
+  ); // 'SECRET_KEY' should be stored securely, not as plain text
+  res.json({ token, roles: user.roles, message: "Login successfully! " });
 };
 
 // logout User
@@ -96,6 +100,16 @@ exports.DeletedUser = async (req, res) => {
   try {
     const removedUser = await User.remove({ _id: req.params.userId });
     res.status(200).send(removedUser);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+
+// AdminUser
+
+exports.AdminUser = async (req, res) => {
+  try {
+    res.send("hiiiiiiiiii")
   } catch (err) {
     res.status(400).send(err);
   }
