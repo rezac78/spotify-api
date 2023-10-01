@@ -9,7 +9,7 @@ exports.RegisterUser = async (req, res) => {
     const user = new User({
       username: req.body.username,
       email: req.body.email,
-      roles: req.body.roles || ["user"],
+      roles: req.body.roles || "user",
       password: hashedPassword,
     });
     await user.save();

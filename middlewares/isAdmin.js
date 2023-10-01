@@ -1,11 +1,8 @@
-const isAdmin = (req, res, next) => {
-  return (req, res, next) => {
-    const user = req.user;
-    if (user && user.roles.includes(role)) {
-      next();
-    } else {
-      res.status(403).send({ message: "Access denied" });
-    }
-  };
+const isAdmin = (roles) => (req, res, next) => {
+  if (roles.includes(req.user.roles)) {
+    next();
+  } else {
+    res.status(403).json({ message: 'Access forbidden' });
+  }
 };
 module.exports = isAdmin;
