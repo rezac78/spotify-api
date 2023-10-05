@@ -37,7 +37,12 @@ exports.LoginUser = async (req, res) => {
       expiresIn: "1h",
     }
   ); // 'SECRET_KEY' should be stored securely, not as plain text
-  res.json({ token, roles: user.roles, message: "Login successfully! " });
+  res.json({
+    token,
+    UserName: user.username,
+    roles: user.roles,
+    message: "Login successfully! ",
+  });
 };
 
 // logout User
@@ -100,16 +105,6 @@ exports.DeletedUser = async (req, res) => {
   try {
     const removedUser = await User.remove({ _id: req.params.userId });
     res.status(200).send(removedUser);
-  } catch (err) {
-    res.status(400).send(err);
-  }
-};
-
-// AdminUser
-
-exports.AdminUser = async (req, res) => {
-  try {
-    res.send("hiiiiiiiiii")
   } catch (err) {
     res.status(400).send(err);
   }
