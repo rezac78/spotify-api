@@ -1,7 +1,6 @@
 const { Router } = require("express");
 const usersControllers = require("../controllers/usersControllers");
 const verifyToken = require('../middlewares/auth');
-const verifyRole = require('../middlewares/isAdmin');
 const router = new Router();
 // Register
 // Post /api/users/register
@@ -27,9 +26,6 @@ router.post("/users/reset-password", usersControllers.ResetPassword);
 // profile
 // get /api/users/profile
 router.post("/users/profile", verifyToken, usersControllers.Profile);
-// Admin
-// get /api/users/Admin
-router.get("/admin", verifyRole('admin'), usersControllers.AdminUser);
 
 
 module.exports = router;
