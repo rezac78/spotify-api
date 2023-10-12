@@ -1,4 +1,6 @@
 const Traditional = require("../models/traditional.model");
+const { SingersTraditional } = require("../models/SingersTreditional.model");
+const { Song } = require("../models/SingersTreditional.model");
 // AdminDash
 exports.AdminDash = async (req, res) => {
   try {
@@ -9,17 +11,14 @@ exports.AdminDash = async (req, res) => {
 };
 //TraditionalDash
 exports.TraditionalDash = async (req, res) => {
+  console.log(req.files)
   try {
-    const { songName, singerName, songType } = req.body;
-
+    const { name, bio } = req.body;
     const coverPhoto = req.files.coverPhoto[0].filename;
-    const songFile = req.files.songFile[0].filename;
-    const traditional = new Traditional({
-      songName: songName,
-      singerName: singerName,
-      songType: songType,
+    const traditional = new SingersTraditional({
+      name: name,
+      bio: bio,
       coverPhoto: coverPhoto,
-      songFile: songFile,
     });
     await traditional.save();
     res.status(200).json({
@@ -37,8 +36,7 @@ exports.TraditionalDash = async (req, res) => {
 //getTraditionalDash
 exports.getTraditionalDash = async (req, res) => {
   try {
-    const songs = await Traditional.find();
-
+    const songs = await SingersTraditional.find();
     res.status(200).json({
       status: "success",
       data: songs,
@@ -56,7 +54,7 @@ exports.getTraditionalDash = async (req, res) => {
 exports.EditTraditionalDash = async (req, res) => {
   try {
     const songId = req.params._id;
-    const song = await Traditional.findById(songId);
+    const song = await SingersTraditional.findById(songId);
 
     if (!song) {
       return res.status(404).json({ message: "Song not found" });
@@ -72,7 +70,7 @@ exports.EditTraditionalDash = async (req, res) => {
 exports.deletedTraditionalDash = async (req, res) => {
   try {
     const songId = req.params._id;
-    const result = await Traditional.findByIdAndDelete(songId);
+    const result = await SingersTraditional.findByIdAndDelete(songId);
     if (!result) {
       return res.status(404).json({ message: "Song not found." });
     }
@@ -80,6 +78,65 @@ exports.deletedTraditionalDash = async (req, res) => {
     res.status(200).json({ message: "Song deleted successfully." });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete the song.", error });
+  }
+};
+
+// Add Song
+exports.AddSong = async (req, res) => {
+  try {
+    const { title } = req.body;
+
+    const audioFile = req.files.songFile[0].filename;
+    const traditional = new Song({
+      title: title,
+      audioFile: audioFile,
+    });
+    await Song.save();
+    res.status(200).json({
+      status: "success",
+      message: "Song uploaded successfully!",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Add Song
+exports.AddSong = async (req, res) => {
+  try {
+    const { title } = req.body;
+
+    const audioFile = req.files.songFile[0].filename;
+    const traditional = new Song({
+      title: title,
+      audioFile: audioFile,
+    });
+    await Song.save();
+    res.status(200).json({
+      status: "success",
+      message: "Song uploaded successfully!",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Get Add Song
+exports.getAddSong = async (req, res) => {
+  try {
+    const singer = await TraditionalSingers.findById(req.params.singerId);
+    const songs = await Song.find({ singerId: req.params.singerId });
+    res.status(200).send({ singer, songs });
+  } catch (error) {
+    res.status(500).send(error);
   }
 };
 
